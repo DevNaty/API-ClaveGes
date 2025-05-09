@@ -1,0 +1,57 @@
+const express = require('express');
+const cors = require('cors');
+//const bodyParser = require('body-parser');
+const usuariosRoutes = require('./routes/usuarios');
+const authRoutes = require('./routes/auth');
+require('dotenv').config();
+const migracionPassword = require('./routes/migracionPassword');
+const categoriasRoutes = require('./routes/categorias');
+const cargaHorariaRoutes = require('./routes/cargaHoraria');
+const ciclosRoutes = require('./routes/ciclos');
+const estadosRoutes = require('./routes/estados');
+const formacionesRoutes = require('./routes/formaciones');
+const nivelesRoutes = require('./routes/niveles');
+const tiposDeHorasRoutes = require('./routes/tiposDeHoras');
+const espaciosCurricularesRoutes = require('./routes/espaciosCurriculares');
+const asignacionesDocentesRoutes = require('./routes/asignacionesDocentes');
+const inscripcionesRoutes = require('./routes/inscripciones');
+const permisosRoutes = require('./routes/permisos');
+/*const validarUsuario = require('./validator/usuarioValidator'); 
+const { validarUsuarioPut } = require('../middlewares/validarUsuario');
+const { validarCampos } = require('./middlewares/validarCampos');*/
+
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+//app.use(bodyParser.json());
+app.use(express.json());
+// Usamos las rutas
+app.use('/api/login', authRoutes);
+app.use('/api/usuarios', usuariosRoutes); 
+app.use('/migracion', migracionPassword);
+app.use('/api/categorias', categoriasRoutes);
+app.use('/api/cargaHoraria', cargaHorariaRoutes);
+app.use('/api/ciclos', ciclosRoutes);
+app.use('/api/estados', estadosRoutes);
+app.use('/api/formaciones', formacionesRoutes);
+app.use('/api/niveles', nivelesRoutes);
+app.use('/api/tiposDeHoras', tiposDeHorasRoutes);
+app.use('/api/espaciosCurriculares', espaciosCurricularesRoutes);
+app.use('/api/asignacionesDocentes', asignacionesDocentesRoutes);
+app.use('/api/inscripciones', inscripcionesRoutes);
+app.use('/api/permisos', permisosRoutes);
+// Conexión inicial a la base de datos
+const { poolPromise } = require('./db');
+poolPromise
+  .then(() => {
+    console.log('✅ Conexión inicial lista');
+  })
+  .catch(err => {
+    console.error('❌ Error conectando a la base de datos:', err);
+  });
+
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+});

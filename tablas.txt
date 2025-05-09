@@ -1,0 +1,214 @@
+developingmothers@gmail.com
+CLAVEGESTION1.0
+
+
+ASIGNACIONES_DOCENTES
+PK ID_Asignacion	int	
+FK ID_Usuario	int	
+FK ID_EspacioCurricular	int	
+AñoLectivo	int	
+FechaAsignacion	datetime	
+FK ID_Ciclo	int	
+FK ID_Formacion	int	
+FK ID_Nivel	int	
+	
+CALLES
+PK ID_Calle	int	
+Detalle	varchar(50)	
+
+CARGAHORARIAS
+PK ID_CargaHoraria	varchar(50)	
+Descripcion	varchar(50)	
+
+CATEGORIAS
+PK ID_Categoria	int	
+Descripcion	varchar(50)
+
+CICLOS
+PK ID_Ciclo	int	
+Descripcion	varchar(50)	
+		
+DATOS_MAMA
+PK ID_DatosMama	int	
+Nombre	varchar(50)	
+Apellido	varchar(50)	
+Dni	int	
+FK ID_Ocupacion	int	
+		
+DATOS_PAPA
+PK ID_DatosPapa	int	
+Nombre	varchar(50)	
+Apellido	varchar(50)	
+Dni	int	
+FK ID_Ocupacion	int
+
+DATOS_TUTOR
+PK ID_DatosTutor	int	
+Nombre	varchar(50)	
+Apellido	varchar(50)	
+Dni	int	
+
+ESCUELAS
+PK ID_Escuela	int	
+Detalle	varchar(50)	
+		
+ESPACIOSCURRICULARES
+PK ID_EspacioCurricular	int	
+Descripcion	varchar(100)	
+CargaHoraria	varchar(50)	
+FK ID_TipoHora	int	
+FK ID_Estado	int	
+FK ID_Ciclo	int	
+FK ID_Formacion	int	
+FK ID_Nivel	int	
+
+ESTADOS
+PK ID_Estado	int	
+Descripcion	varchar(50)	
+		
+FORMACIONES
+PK ID_Formacion	int	
+Descripcion	varchar(50)	
+		
+GRADO_DE_ESTUDIOS
+PK ID_GradoEstudioObtenido	int	
+Detalle	varchar(50)	
+
+GRADOS_ESCOLARES
+PK ID_Grado	int	
+Detalle	varchar(50)	
+		
+
+INSCRIPCIONES
+PK ID_Inscripcion	int	
+FK ID_Usuario	int	
+FK ID_Ciclo	int	
+FK ID_Formacion	int	
+FK ID_Nivel	int	
+FK ID_EspacioCurricular	int	
+AñoLectivo	int	
+FechaInscripcion	date	
+FK ID_Estado	int	
+FechaNacimiento	date	
+LugarNacimiento	varchar(50)	
+FK ID_Nacionalidad	int	
+FK ID_Localidad	int	
+FK ID_Calle	int	
+Nuemero	varchar(50)	
+Telefono1	int	
+Telefono1_pertenece	varchar(50)	
+Telefono2	int	
+Telefono2_pertenece	varchar(50)	
+Email_comunicacion	varchar(50)	
+FK ID_DatosMama	int	
+FK ID_DatosPapa	int	
+FK ID_DatosTutor	int	
+FK ID_Escuela	int	
+FK ID_NivelEscolar	int	
+FK ID_Grado	int	
+FK ID_Turno	int	
+FK ID_DetalleMatricula	int	
+FK ID_DetalleInstrumento	int	
+TieneInstrumento	bit	
+FK ID_GradoEstudioObtenido	int	
+FK ID_Ocupacion	int	
+Observaciones	varchar(500)	
+		
+
+INSTRUMENTOS
+PK ID_Instrumento	int	
+Detalle	varchar(50)	
+		Unchecked
+
+INSTRUMENTOS_DESTALLES
+PK ID_DetalleInstrumento	int	
+FK ID_Instrumento	int	
+		
+
+LOCALIDADES
+PK ID_Localidad	int	
+Detalle	varchar(50)	
+		
+
+MATRICULAS_DETALLES
+PK ID_DetalleMatricula	int	
+FK ID_Instrumento	int	
+		
+
+NACIONALIDADES
+PK ID_Nacionalidad	int	
+Detalle	varchar(50)			
+
+NIVELES
+PK ID_Nivel	int	
+Descripcion	varchar(50)	
+		
+
+NIVELES_ACADEMICOS
+PK ID_NivelEscolar	int	
+Detalle	varchar(50)	
+		
+
+OCUPACIONES
+PK ID_Ocupacion	int	
+Detalle	varchar(50)	
+		
+
+PERMISOS
+PK ID_Permiso	int	
+FK ID_Categoria	int	
+Accion	varchar(50)	
+		
+
+TIPOSDEHORAS
+PK ID_TipoHora	int	
+Descripcion	varchar(50)	
+		
+
+TURNOS_ESCOLARES
+PK ID_Turno	int	
+Detalle	varchar(50)	
+		
+		
+USUARIOS
+PK ID_Usuario	int	
+Nombre	varchar(50)	
+Apellido	varchar(50)	
+Telefono	varchar(50)	
+Email	varchar(50)	
+Password	varchar(100)	
+Dni	varchar(50)	
+FK ID_Estado	int	
+		
+		
+USUARIOS_CATEGORIAS
+PK ID_UsuarioCategoria	int	
+FK ID_Usuario	int	
+FK ID_Categoria	int	
+FK ID_Estado int
+		
+
+//pendientes
+📦 Opcional: Middleware para verificación de roles (si pensás implementarlos)
+Si tu app tiene distintos tipos de usuarios, podés incluir middleware tipo:
+
+const verificarRol = (rolPermitido) => {
+  return (req, res, next) => {
+    if (req.usuario.rol !== rolPermitido) {
+      return res.status(403).json({ mensaje: 'No autorizado' });
+    }
+    next();
+  };
+};
+
+
+
+ALTER TABLE ASIGNACIONES_DOCENTES
+ADD CONSTRAINT Fk_Asig_Doc_CICLOS
+FOREIGN KEY (ID_CICLO)
+REFERENCES CICLOS(ID_CICLO);
+
+ALTER TABLE Pedidos
+ADD CONSTRAINT FK_Pedidos_Usuarios
+FOREIGN KEY (ID_USUARIO)
+REFERENCES Usuarios(ID_USUARIO);
