@@ -25,6 +25,7 @@ const espaciosCurricularesRoutes = require('./routes/espaciosCurriculares');
 const asignacionesDocentesRoutes = require('./routes/asignacionesDocentes');
 const inscripcionesRoutes = require('./routes/inscripciones');
 const permisosRoutes = require('./routes/permisos');
+const vinculosRoutes = require('./routes/vinculos');
 /*const validarUsuario = require('./validator/usuarioValidator'); 
 const { validarUsuarioPut } = require('../middlewares/validarUsuario');
 const { validarCampos } = require('./middlewares/validarCampos');*/
@@ -60,6 +61,7 @@ app.use('/api/espaciosCurriculares', espaciosCurricularesRoutes);
 app.use('/api/asignacionesDocentes', asignacionesDocentesRoutes);
 app.use('/api/inscripciones', inscripcionesRoutes);
 app.use('/api/permisos', permisosRoutes);
+app.use('/api/vinculos', vinculosRoutes);
 // Conexión inicial a la base de datos
 const { poolPromise } = require('./db');
 poolPromise
