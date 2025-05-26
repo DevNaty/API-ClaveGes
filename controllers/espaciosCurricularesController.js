@@ -54,7 +54,8 @@ const getEspacios = async (req, res) => {
   };
   
   const createEspacio = async (req, res) => {
-    const { Descripcion, CargaHoraria,ID_TipoHora, ID_Estado, ID_Ciclo, ID_Formacion, ID_Nivel } = req.body;
+    const { Descripcion, CargaHoraria,ID_TipoHora, ID_Estado, ID_Ciclo, ID_Formacion, 
+      ID_Nivel } = req.body;
     try {
       const pool = await poolPromise;
       await pool.request()

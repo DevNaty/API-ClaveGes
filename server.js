@@ -23,10 +23,14 @@ const tiposDeHorasRoutes = require('./routes/tiposDeHoras');
 const turnosEscolaresRoutes = require('./routes/turnosEscolares');
 const espaciosCurricularesRoutes = require('./routes/espaciosCurriculares');
 const asignacionesDocentesRoutes = require('./routes/asignacionesDocentes');
-const inscripcionesRoutes = require('./routes/inscripciones');
+//const inscripcionesRoutes = require('./routes/inscripciones');
 const permisosRoutes = require('./routes/permisos');
 const vinculosRoutes = require('./routes/vinculos');
 const ocupacionesRoutes = require('./routes/ocupaciones');
+const datosAlumnosRoutes = require('./routes/datosAlumnos');
+const ocupacionesVinculosRoutes = require('./routes/ocupacionesVinculos');
+const matriculaDetRoutes = require('./routes/matriculaDet');
+const instrumentosDetallesRoutes = require('./routes/instrumentosDetalles');
 /*const validarUsuario = require('./validator/usuarioValidator'); 
 const { validarUsuarioPut } = require('../middlewares/validarUsuario');
 const { validarCampos } = require('./middlewares/validarCampos');*/
@@ -60,10 +64,14 @@ app.use('/api/turnosEscolares', turnosEscolaresRoutes);
 app.use('/api/tiposDeHoras', tiposDeHorasRoutes);
 app.use('/api/espaciosCurriculares', espaciosCurricularesRoutes);
 app.use('/api/asignacionesDocentes', asignacionesDocentesRoutes);
-app.use('/api/inscripciones', inscripcionesRoutes);
+//app.use('/api/inscripciones', inscripcionesRoutes);
 app.use('/api/permisos', permisosRoutes);
 app.use('/api/vinculos', vinculosRoutes);
 app.use('/api/ocupaciones', ocupacionesRoutes);
+app.use('/api/datosAlumnos', datosAlumnosRoutes);
+app.use('/api/ocupacionesVinculos', ocupacionesVinculosRoutes);
+app.use('/api/matriculaDet', matriculaDetRoutes);
+app.use('/api/instrumentosDetalles', instrumentosDetallesRoutes);
 // Conexión inicial a la base de datos
 const { poolPromise } = require('./db');
 poolPromise
