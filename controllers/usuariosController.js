@@ -1,4 +1,76 @@
 // controllers/usuariosController.js
+
+const usuarioService = require('../Services/usuariosService');
+
+// GET todos los usuarios
+const getUsuarios = async (req, res) => {
+  try {
+    const usuarios = await usuarioService.obtenerUsuarios();
+    res.json(usuarios);
+  } catch (error) {
+    console.error('❌ Error al obtener usuarios:', error);
+    res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
+};
+
+// POST crear usuario
+const createUsuario = async (req, res) => {
+  try {
+    const nuevoID = await usuarioService.crearUsuario(req.body);
+    res.status(201).json({ mensaje: 'Usuario creado con éxito', ID_Usuario: nuevoID });
+  } catch (error) {
+    console.error('❌ Error al crear usuario:', error);
+    res.status(500).json({ error: 'Error al crear usuario' });
+  }
+};
+
+// GET usuario por ID
+const getUsuarioPorId = async (req, res) => {
+  try {
+    const usuario = await usuarioService.obtenerUsuarioPorId(req.params.id);
+    if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    res.json(usuario);
+  } catch (error) {
+    console.error('❌ Error al obtener usuario por ID:', error);
+    res.status(500).json({ error: 'Error al obtener usuario por ID' });
+  }
+};
+
+// PUT actualizar usuario
+const updateUsuario = async (req, res) => {
+  try {
+    const actualizado = await usuarioService.actualizarUsuario(req.params.id, req.body);
+    if (actualizado === 0) return res.status(404).json({ mensaje: 'Usuario no encontrado para actualizar' });
+    res.json({ mensaje: 'Usuario actualizado con éxito' });
+  } catch (error) {
+    console.error('❌ Error al actualizar usuario:', error);
+    res.status(500).json({ error: 'Error al actualizar usuario' });
+  }
+};
+
+// DELETE eliminar usuario
+const deleteUsuario = async (req, res) => {
+  try {
+    const eliminado = await usuarioService.eliminarUsuario(req.params.id);
+    if (eliminado === 0) return res.status(404).json({ mensaje: 'Usuario no encontrado para eliminar' });
+    res.json({ mensaje: 'Usuario eliminado con éxito' });
+  } catch (error) {
+    console.error('❌ Error al eliminar usuario:', error);
+    res.status(500).json({ error: 'Error al eliminar usuario' });
+  }
+};
+
+module.exports = {
+  getUsuarios,
+  createUsuario,
+  getUsuarioPorId,
+  updateUsuario,
+  deleteUsuario
+};
+
+
+
+/* controllers/usuariosController.js
 const { poolPromise } = require('../db');
 const bcrypt = require('bcryptjs');
 const sql = require('mssql');
@@ -245,3 +317,4 @@ module.exports = {
   updateUsuario,
   deleteUsuario
 };
+*/
