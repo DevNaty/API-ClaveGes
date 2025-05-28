@@ -89,29 +89,29 @@ FK ID_EspacioCurricular	int
 AñoLectivo	int	
 FechaInscripcion	date	
 FK ID_Estado	int	
-FechaNacimiento	date	
-LugarNacimiento	varchar(50)	
-FK ID_Nacionalidad	int	
-FK ID_Localidad	int	
-FK ID_Calle	int	
-Nuemero	varchar(50)	
-Telefono1	int	
-Telefono1_pertenece	varchar(50)	
-Telefono2	int	
-Telefono2_pertenece	varchar(50)	
-Email_comunicacion	varchar(50)	
-FK ID_DatosMama	int	
-FK ID_DatosPapa	int	
-FK ID_DatosTutor	int	
-FK ID_Escuela	int	
-FK ID_NivelEscolar	int	
-FK ID_Grado	int	
-FK ID_Turno	int	
-FK ID_DetalleMatricula	int	
-FK ID_DetalleInstrumento	int	
-TieneInstrumento	bit	
-FK ID_GradoEstudioObtenido	int	
-FK ID_Ocupacion	int	
+**FechaNacimiento	date	
+**LugarNacimiento	varchar(50)	
+**FK ID_Nacionalidad	int	
+**FK ID_Localidad	int	
+**FK ID_Calle	int	
+**Nuemero	varchar(50)	
+**Telefono1	int	
+**Telefono1_pertenece	varchar(50)	
+**Telefono2	int	
+**Telefono2_pertenece	varchar(50)	
+**Email_comunicacion	varchar(50)	
+**FK ID_DatosMama	int	
+**FK ID_DatosPapa	int	
+**FK ID_DatosTutor	int	
+**FK ID_Escuela	int	
+**FK ID_NivelEscolar	int	
+**FK ID_Grado	int	
+**FK ID_Turno	int	
+**FK ID_DetalleMatricula	int	
+**FK ID_DetalleInstrumento	int	
+**TieneInstrumento	bit	
+**FK ID_GradoEstudioObtenido	int	
+**FK ID_Ocupacion	int	
 Observaciones	varchar(500)	
 		
 
@@ -212,3 +212,27 @@ ALTER TABLE Pedidos
 ADD CONSTRAINT FK_Pedidos_Usuarios
 FOREIGN KEY (ID_USUARIO)
 REFERENCES Usuarios(ID_USUARIO);
+
+
+GRADO_DE_ESTUDIOS* *ESPACIOSCURRICULARES* *TURNOS_ESCOLARES* *OCUPACIONES* *NIVELES_ACADEMICOS* *INSTRUMENTOS* *GRADOS_ESCOLARES* *INSCRIPCIONES*
+
+
+hola buen dia te cuento que sigo trabajando en la api, hice muchisimas modificaciones, por lo cual voy a necesitar que me ayudes con los endpoints de las tablas 
+*INSCRIPCIONES
+*DATOS_ALUMNOS
+*MATRICULAS_DETALLES
+*INSTRUMENTOS_DETALLES
+*OCUPACIONES_VINCULOS
+de las cuales, DATOS_ALUMNOS puede tener datos o no, te cuento como se compone y como deberia de funcionar
+
+*DATOS_ALUMNOS
+pk ID_DatosAlumno
+ID_Usuario (si debe buscar este dato en la tabla USUARIOS si el usuario no esta registrado no se puede inscribir)
+ID_DatosAlumno (viene de una tabla intermedia llamada DATOS_ALUMNOS, si el usuario no tiene datos registrado como alumno los debe guardar ahi, si los tiene se tienen que poder mostrar)
+ID_DetalleMatricula (viene de una tabla intermedia llamada MATRICULAS_DETALLES, si el usuario no tiene datos registrado como alumno los debe guardar ahi, si los tiene se tienen que poder mostrar)
+ID_Ciclo (viene de la tabla CICLOS tenemos que mostrar su columna descripcion para que sea una opcion elejible)
+ID_Formacion(viene de la tabla FORMACIONES tenemos que mostrar su columna descripcion para que sea una opcion elejible)
+ID_Nivel (viene de la tabla NIVELES tenemos que mostrar su columna descripcion para que sea una opcion elejible)
+ID_EspacioCurricular (viene de la tabla ESPACIOSCURRICULARES tenemos que mostrar su columna descripcion para que sea una opcion elejible)
+AñoLectivo (el front mostrara años para que se guarden ahi)
+FechaInscripcion (el front mostrara un calendario para seleccinar la fecha y debe guardarse ahi)

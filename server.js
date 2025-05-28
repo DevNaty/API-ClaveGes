@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-//const bodyParser = require('body-parser');
 const usuariosRoutes = require('./routes/usuarios');
 const authRoutes = require('./routes/auth');
 require('dotenv').config();
@@ -31,9 +30,9 @@ const datosAlumnosRoutes = require('./routes/datosAlumnos');
 const ocupacionesVinculosRoutes = require('./routes/ocupacionesVinculos');
 const matriculaDetRoutes = require('./routes/matriculaDet');
 const instrumentosDetallesRoutes = require('./routes/instrumentosDetalles');
-/*const validarUsuario = require('./validator/usuarioValidator'); 
-const { validarUsuarioPut } = require('../middlewares/validarUsuario');
-const { validarCampos } = require('./middlewares/validarCampos');*/
+//const validarUsuario = require('./validator/usuarioValidator'); 
+//const { validarUsuarioPut } = require('../middlewares/validarUsuario');
+//const { validarCampos } = require('./middlewares/validarCampos');
 
 
 const app = express();
@@ -72,6 +71,7 @@ app.use('/api/datosAlumnos', datosAlumnosRoutes);
 app.use('/api/ocupacionesVinculos', ocupacionesVinculosRoutes);
 app.use('/api/matriculaDet', matriculaDetRoutes);
 app.use('/api/instrumentosDetalles', instrumentosDetallesRoutes);
+
 // Conexión inicial a la base de datos
 const { poolPromise } = require('./db');
 poolPromise

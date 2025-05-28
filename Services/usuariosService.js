@@ -10,16 +10,10 @@ const obtenerUsuarios = async () => {
     SELECT 
       u.*,
       c.Descripcion AS Categoria,
-      ci.Descripcion AS Ciclo,
-      f.Descripcion AS Formacion,
-      n.Descripcion AS Nivel,
       e.Descripcion AS Estado
     FROM USUARIOS u
     LEFT JOIN USUARIOS_CATEGORIAS uc ON u.ID_Usuario = uc.ID_Usuario
     LEFT JOIN CATEGORIAS c ON uc.ID_Categoria = c.ID_Categoria
-    LEFT JOIN CICLOS ci ON u.ID_Ciclo = ci.ID_Ciclo
-    LEFT JOIN FORMACIONES f ON u.ID_Formacion = f.ID_Formacion
-    LEFT JOIN NIVELES n ON u.ID_Nivel = n.ID_Nivel
     LEFT JOIN ESTADOS e ON u.ID_Estado = e.ID_Estado
   `);
   return result.recordset;
@@ -29,7 +23,7 @@ const obtenerUsuarios = async () => {
 const crearUsuario = async (datosUsuario) => {
   const {
     Nombre, Apellido, Telefono, Email, Password,
-    Dni, ID_Estado, ID_Ciclo, ID_Formacion, ID_Nivel, Categorias
+    Dni, ID_Estado, 
   } = datosUsuario;
 
   const salt = await bcrypt.genSalt(10);
@@ -45,24 +39,22 @@ const crearUsuario = async (datosUsuario) => {
     .input('Password', sql.VarChar, passwordEncriptada)
     .input('Dni', sql.VarChar, Dni)
     .input('ID_Estado', sql.Int, ID_Estado)
-    .input('ID_Ciclo', sql.Int, ID_Ciclo)
-    .input('ID_Formacion', sql.Int, ID_Formacion)
-    .input('ID_Nivel', sql.Int, ID_Nivel)
     .query(`
       INSERT INTO USUARIOS 
-      (Nombre, Apellido, Telefono, Email, Password, Dni, ID_Estado, ID_Ciclo, ID_Formacion, ID_Nivel)
+      (Nombre, Apellido, Telefono, Email, Password, Dni, ID_Estado)
       OUTPUT INSERTED.ID_Usuario
-      VALUES (@Nombre, @Apellido, @Telefono, @Email, @Password, @Dni, @ID_Estado, @ID_Ciclo, @ID_Formacion, @ID_Nivel)
+      VALUES (@Nombre, @Apellido, @Telefono, @Email, @Password, @Dni, @ID_Estado)
     `);
 
-  const nuevoID = result.recordset[0].ID_Usuario;
 
+  const nuevoID = result.recordset[0].ID_Usuario;
+/*
   for (let idCategoria of Categorias) {
     await pool.request()
       .input('ID_Usuario', sql.Int, nuevoID)
       .input('ID_Categoria', sql.Int, idCategoria)
       .query(`INSERT INTO USUARIOS_CATEGORIAS (ID_Usuario, ID_Categoria) VALUES (@ID_Usuario, @ID_Categoria)`);
-  }
+  }*/
 
   return nuevoID;
 };
@@ -82,7 +74,7 @@ const obtenerUsuarioPorId = async (id) => {
 const actualizarUsuario = async (id, datos) => {
   const {
     Nombre, Apellido, Telefono, Email, Password,
-    Dni, ID_Estado, ID_Ciclo, ID_Formacion, ID_Nivel, Categorias
+    Dni, ID_Estado
   } = datos;
 
   const pool = await poolPromise;
@@ -98,10 +90,7 @@ const actualizarUsuario = async (id, datos) => {
     .input('Telefono', sql.VarChar, Telefono)
     .input('Email', sql.VarChar, Email)
     .input('Dni', sql.VarChar, Dni)
-    .input('ID_Estado', sql.Int, ID_Estado)
-    .input('ID_Ciclo', sql.Int, ID_Ciclo)
-    .input('ID_Formacion', sql.Int, ID_Formacion)
-    .input('ID_Nivel', sql.Int, ID_Nivel);
+    .input('ID_Estado', sql.Int, ID_Estado);
 
   if (passwordFinal) {
     request.input('Password', sql.VarChar, passwordFinal);
@@ -115,10 +104,7 @@ const actualizarUsuario = async (id, datos) => {
         Email = @Email,
         ${passwordFinal ? 'Password = @Password,' : ''}
         Dni = @Dni,
-        ID_Estado = @ID_Estado,
-        ID_Ciclo = @ID_Ciclo,
-        ID_Formacion = @ID_Formacion,
-        ID_Nivel = @ID_Nivel
+        ID_Estado = @ID_Estado
     WHERE ID_USUARIO = @ID_USUARIO
   `;
 
