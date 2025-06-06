@@ -35,6 +35,17 @@ const getUsuarioPorId = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener usuario por ID' });
   }
 };
+// GET usuarios por nombre o apellido
+const buscarUsuarios = async (req, res) => {
+  try {
+    const filtro = req.query.filtro || '';
+    const usuarios = await usuarioService.buscarUsuariosPorNombreOApellido(filtro);
+    res.json(usuarios);
+  } catch (error) {
+    console.error('❌ Error al buscar usuarios:', error);
+    res.status(500).json({ error: 'Error al buscar usuarios' });
+  }
+};
 
 // PUT actualizar usuario
 const updateUsuario = async (req, res) => {
@@ -65,8 +76,28 @@ module.exports = {
   createUsuario,
   getUsuarioPorId,
   updateUsuario,
+  buscarUsuarios,
   deleteUsuario
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

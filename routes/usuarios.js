@@ -10,6 +10,7 @@ const {
   getUsuarios,
   createUsuario,
   getUsuarioPorId,
+  buscarUsuarios,
   updateUsuario,
   deleteUsuario
 } = require('../controllers/usuariosController');
@@ -30,6 +31,7 @@ routes.get('/', getUsuarios);
 
 // 🔍 GET - Usuario por ID
 routes.get('/:id', getUsuarioPorId);
+routes.get('/buscar',buscarUsuarios);
 
 // ➕ POST - Crear nuevo 
 // ✨ Ruta con validación incluida

@@ -70,6 +70,26 @@ const obtenerUsuarioPorId = async (id) => {
   return result.recordset[0];
 };
 
+// Buscar usuarios por nombre o apellido
+const buscarUsuariosPorNombreOApellido = async (filtro) => {
+  const pool = await poolPromise;
+  const result = await pool.request()
+    .input('filtro', sql.VarChar, `%${filtro}%`)
+    .query(`
+      SELECT 
+        u.*,
+        c.Descripcion AS Categoria,
+        e.Descripcion AS Estado
+      FROM USUARIOS u
+      LEFT JOIN USUARIOS_CATEGORIAS uc ON u.ID_Usuario = uc.ID_Usuario
+      LEFT JOIN CATEGORIAS c ON uc.ID_Categoria = c.ID_Categoria
+      LEFT JOIN ESTADOS e ON u.ID_Estado = e.ID_Estado
+      WHERE u.Nombre LIKE @filtro OR u.Apellido LIKE @filtro
+    `);
+  return result.recordset;
+};
+
+
 // Actualizar usuario
 const actualizarUsuario = async (id, datos) => {
   const {
@@ -145,6 +165,7 @@ module.exports = {
   obtenerUsuarios,
   crearUsuario,
   obtenerUsuarioPorId,
+  buscarUsuariosPorNombreOApellido,
   actualizarUsuario,
   eliminarUsuario
 };

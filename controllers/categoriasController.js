@@ -33,6 +33,7 @@ const getCategoriaById = async (req, res) => {
   }
 };
 
+
 // Crear una nueva categoría
 const createCategoria = async (req, res) => {
   try {
