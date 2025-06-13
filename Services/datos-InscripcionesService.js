@@ -4,8 +4,10 @@ const sql = require('mssql');
 const crearInscripcion = async (datos) => {
   const {
     ID_Usuario,
-    ID_DatosAlumno,
     ID_DetalleMatricula,
+    ID_DetalleInstrumento,
+    TieneInstrumentos,
+    Observaciones,    
     ID_Ciclo,
     ID_Formacion,
     ID_Nivel,
@@ -17,19 +19,24 @@ const crearInscripcion = async (datos) => {
   const pool = await poolPromise;
   const result = await pool.request()
     .input('ID_Usuario', sql.Int, ID_Usuario)
-    .input('ID_DatosAlumno', sql.Int, ID_DatosAlumno || null)
     .input('ID_DetalleMatricula', sql.Int, ID_DetalleMatricula)
+    .input('ID_DetalleInstrumento', sql.Int, ID_DetalleInstrumento || null)
+    .input('TieneInstrumentos', sql.Bit, TieneInstrumentos)
+    .input('Observaciones', sql.VarChar, Observaciones)
     .input('ID_Ciclo', sql.Int, ID_Ciclo)
     .input('ID_Formacion', sql.Int, ID_Formacion)
     .input('ID_Nivel', sql.Int, ID_Nivel)
     .input('ID_EspacioCurricular', sql.Int, ID_EspacioCurricular)
-    .input('AñoLectivo', sql.Int, AñoLectivo)
+    .input('AñoLectivo', sql.Date, AñoLectivo)
     .input('FechaInscripcion', sql.DateTime, FechaInscripcion)
     .query(`
-      INSERT INTO INSCRIPCIONES 
-      (ID_Usuario, ID_DatosAlumno, ID_DetalleMatricula, ID_Ciclo, ID_Formacion, ID_Nivel, ID_EspacioCurricular, AñoLectivo, FechaInscripcion)
+      INSERT INTO DATOS_INSCRIPCION 
+      (ID_Usuario, ID_DetalleMatricula, ID_DetalleInstrumento,
+      TieneInstrumentos, Observaciones, ID_Ciclo, ID_Formacion, 
+      ID_Nivel, ID_EspacioCurricular, AñoLectivo, FechaInscripcion)
       OUTPUT INSERTED.ID_Inscripcion
-      VALUES (@ID_Usuario, @ID_DatosAlumno, @ID_DetalleMatricula, @ID_Ciclo, @ID_Formacion, @ID_Nivel, @ID_EspacioCurricular, @AñoLectivo, @FechaInscripcion)
+      VALUES (@ID_Usuario, @ID_DetalleMatricula, @ID_DetalleInstrumento,
+      @TieneInstrumentos, @Observaciones, @ID_Ciclo, @ID_Formacion, @ID_Nivel, @ID_EspacioCurricular, @AñoLectivo, @FechaInscripcion)
     `);
 
   return result.recordset[0];
@@ -38,10 +45,7 @@ const crearInscripcion = async (datos) => {
 const obtenerInscripciones = async () => {
   const pool = await poolPromise;
   const result = await pool.request().query(`
-    SELECT i.*, u.Nombre, da.Nombre AS Alumno
-    FROM INSCRIPCIONES i
-    LEFT JOIN USUARIOS u ON i.ID_Usuario = u.ID_Usuario
-    LEFT JOIN DATOS_ALUMNOS da ON i.ID_DatosAlumno = da.ID_DatosAlumno
+    SELECT *    FROM DATOS_INSCRIPCION 
   `);
   return result.recordset;
 };
@@ -49,9 +53,9 @@ const obtenerInscripciones = async () => {
 const obtenerInscripcionPorId = async (id) => {
   const pool = await poolPromise;
   const result = await pool.request()
-    .input('ID_Inscripcion', sql.Int, id)
+    .input('ID_DatoInscripcion', sql.Int, id)
     .query(`
-      SELECT * FROM INSCRIPCIONES WHERE ID_Inscripcion = @ID_Inscripcion
+      SELECT * FROM DATOS_INSCRIPCION WHERE ID_DatoInscripcion = @ID_DatoInscripcion
     `);
   return result.recordset[0];
 };
@@ -59,8 +63,8 @@ const obtenerInscripcionPorId = async (id) => {
 const eliminarInscripcion = async (id) => {
   const pool = await poolPromise;
   const result = await pool.request()
-    .input('ID_Inscripcion', sql.Int, id)
-    .query(`DELETE FROM INSCRIPCIONES WHERE ID_Inscripcion = @ID_Inscripcion`);
+    .input('ID_DatoInscripcion', sql.Int, id)
+    .query(`DELETE FROM DATOS_INSCRIPCION WHERE ID_DatoInscripcion = @ID_DatoInscripcion`);
   return result.rowsAffected[0] > 0;
 };
 

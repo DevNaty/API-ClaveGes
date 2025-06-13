@@ -1,11 +1,11 @@
-const inscripcionesService = require('../Services/inscripcionesService');
+const datosInscripcionesService = require('../Services/datos-InscripcionesService');
 
 const crearInscripcion = async (req, res) => {
   try {
-    const nuevaInscripcion = await inscripcionesService.crearInscripcion(req.body);
+    const nuevaInscripcion = await datosInscripcionesService.crearInscripcion(req.body);
     res.status(201).json({
       mensaje: 'Inscripción creada correctamente',
-      ID_Inscripcion: nuevaInscripcion.ID_Inscripcion
+      ID_DatoInscripcion: nuevaInscripcion.ID_DatoInscripcion
     });
   } catch (error) {
     console.error('❌ Error al crear inscripción:', error);
@@ -15,7 +15,7 @@ const crearInscripcion = async (req, res) => {
 
 const obtenerInscripciones = async (req, res) => {
   try {
-    const inscripciones = await inscripcionesService.obtenerInscripciones();
+    const inscripciones = await datosInscripcionesService.obtenerInscripciones();
     res.json(inscripciones);
   } catch (error) {
     console.error('❌ Error al obtener inscripciones:', error);
@@ -26,7 +26,7 @@ const obtenerInscripciones = async (req, res) => {
 const obtenerInscripcionPorId = async (req, res) => {
   try {
     const id = req.params.id;
-    const inscripcion = await inscripcionesService.obtenerInscripcionPorId(id);
+    const inscripcion = await datosInscripcionesService.obtenerInscripcionPorId(id);
     if (!inscripcion) {
       return res.status(404).json({ mensaje: 'Inscripción no encontrada' });
     }
@@ -40,7 +40,7 @@ const obtenerInscripcionPorId = async (req, res) => {
 const eliminarInscripcion = async (req, res) => {
   try {
     const id = req.params.id;
-    const eliminado = await inscripcionesService.eliminarInscripcion(id);
+    const eliminado = await datosInscripcionesService.eliminarInscripcion(id);
     if (!eliminado) {
       return res.status(404).json({ mensaje: 'Inscripción no encontrada para eliminar' });
     }

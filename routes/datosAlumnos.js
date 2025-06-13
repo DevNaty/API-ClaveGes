@@ -3,6 +3,7 @@ const router = express.Router();
 const datosAlumnosController = require('../controllers/datosAlumnosController');
 
 router.post('/', datosAlumnosController.crearDatosAlumno);
+router.get('/', datosAlumnosController.obtenerDatosAlumno);
 router.get('/:id', datosAlumnosController.obtenerDatosAlumnoPorId);
 router.put('/:id', datosAlumnosController.actualizarDatosAlumno);
 router.delete('/:id', datosAlumnosController.eliminarDatosAlumno);

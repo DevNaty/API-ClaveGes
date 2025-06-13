@@ -10,6 +10,15 @@ const crearDatosAlumno = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+const obtenerDatosAlumno = async (req, res) => {
+  try {
+    const datos = await datosAlumnosService.obtenerDatosAlumno();
+    res.json(datos);
+  } catch (error) {
+    console.error('❌ Error al obtener usuarios:', error);
+    res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
+};
 
 const obtenerDatosAlumnoPorId = async (req, res) => {
   try {
@@ -47,6 +56,7 @@ const eliminarDatosAlumno = async (req, res) => {
 
 module.exports = {
   crearDatosAlumno,
+  obtenerDatosAlumno,
   obtenerDatosAlumnoPorId,
   actualizarDatosAlumno,
   eliminarDatosAlumno
