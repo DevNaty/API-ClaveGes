@@ -63,10 +63,24 @@ const eliminarInscripcion = async (req, res) => {
   }
 };
 
+const obtenerInscripcionesConDescripciones = async (req, res) => {
+  try {
+    const nuevaInscripcion = await datosInscripcionesService.obtenerInscripcionesConDescripciones(req.body);
+    res.status(201).json({
+      mensaje: 'Inscripción creada correctamente',
+      ID_DatoInscripcion: nuevaInscripcion.ID_DatoInscripcion
+    });
+  } catch (error) {
+    console.error('❌ Error al crear inscripción:', error);
+    res.status(500).json({ error: 'Error al crear inscripción' });
+  }
+};
+
 module.exports = {
   crearInscripcion,
   obtenerInscripciones,
   obtenerInscripcionPorId,
   actualizarInscripcion,
-  eliminarInscripcion
+  eliminarInscripcion,
+  obtenerInscripcionesConDescripciones
 };

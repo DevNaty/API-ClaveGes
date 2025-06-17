@@ -107,10 +107,61 @@ const eliminarInscripcion = async (id) => {
   return result.rowsAffected[0] > 0;
 };
 
+const { poolPromise } = require('../db');
+const sql = require('mssql');
+
+/**
+ * @desc Obtiene todas las inscripciones, mostrando las descripciones
+ * de las entidades relacionadas en lugar de solo sus IDs.
+ * @returns {Array} Un array de objetos de inscripción con descripciones legibles.
+ */
+const obtenerInscripcionesConDescripciones = async () => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT
+        DI.ID_DatoInscripcion,
+        U.Nombre + ' ' + U.Apellido AS NombreUsuario, -- Nombre completo del usuario
+        DMat.Descripcion AS DescripcionMatricula,      -- Descripción de detalle de matrícula
+        DInst.Descripcion AS DescripcionInstrumento,   -- Descripción de detalle de instrumento
+        DI.TieneInstrumentos,
+        DI.Observaciones,
+        C.Descripcion AS DescripcionCiclo,             -- Descripción del ciclo
+        F.Descripcion AS DescripcionFormacion,         -- Descripción de la formación
+        N.Descripcion AS DescripcionNivel,             -- Descripción del nivel
+        EC.Descripcion AS DescripcionEspacioCurricular, -- Descripción del espacio curricular
+        DI.AñoLectivo,
+        FORMAT(DI.FechaInscripcion, 'yyyy-MM-dd') AS FechaInscripcion -- Formato de fecha
+      FROM
+        DATOS_INSCRIPCION DI
+      LEFT JOIN
+        USUARIOS U ON DI.ID_Usuario = U.ID_Usuario
+      LEFT JOIN
+        DETALLE_MATRICULA DMat ON DI.ID_DetalleMatricula = DMat.ID_DetalleMatricula -- Asume el nombre de tu tabla de detalle de matrícula
+      LEFT JOIN
+        DETALLE_INSTRUMENTO DInst ON DI.ID_DetalleInstrumento = DInst.ID_DetalleInstrumento -- Asume el nombre de tu tabla de detalle de instrumento
+      LEFT JOIN
+        CICLOS C ON DI.ID_Ciclo = C.ID_Ciclo
+      LEFT JOIN
+        FORMACIONES F ON DI.ID_Formacion = F.ID_Formacion
+      LEFT JOIN
+        NIVELES N ON DI.ID_Nivel = N.ID_Nivel
+      LEFT JOIN
+        ESPACIOSCURRICULARES EC ON DI.ID_EspacioCurricular = EC.ID_EspacioCurricular;
+    `);
+    return result.recordset;
+  } catch (error) {
+    console.error('❌ Error al obtener inscripciones con descripciones:', error);
+    throw new Error('No se pudieron obtener las inscripciones con descripciones.');
+  }
+};
+
+
 module.exports = {
   crearInscripcion,
   obtenerInscripciones,
   obtenerInscripcionPorId,
   actualizarInscripcion,
-  eliminarInscripcion
+  eliminarInscripcion,
+  obtenerInscripcionesConDescripciones
 };
