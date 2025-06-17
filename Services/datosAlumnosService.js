@@ -19,20 +19,35 @@ async function crearDatosAlumno(datos) {
     .input('ID_DatosMadre', sql.Int, datos.ID_DatosMadre)
     .input('ID_DatosPadre', sql.Int, datos.ID_DatosPadre)
     .input('ID_DatosTutor', sql.Int, datos.ID_DatosTutor)
-    .input('ID_DatosEscolarridad', sql.Int, datos.ID_DatosEscolarridad)
+    .input('ID_DatosEscolaridad', sql.Int, datos.ID_DatosEscolaridad)
+    .input('ID_Ocupacion', sql.Int, datos.ID_Ocupacion)
+    .input('ID_GradoEstudioObtenido', sql.Int, datos.ID_GradoEstudioObtenido)
     .query(`
       INSERT INTO DATOS_ALUMNOS (
         ID_Usuario, FechaNacimiento, LugarNacimiento, 
         ID_Localidad, ID_Calle, Numero, 
-        ID_Nacionalidad, Telefono, Email, 
-        ID_DatosMadre, ID_DatosPadre, ID_DatosTutor, ID_DatosEscolarridad
+        ID_Nacionalidad, 
+        Telefono, Email, 
+        ID_DatosMadre, 
+        ID_DatosPadre, 
+        ID_DatosTutor, 
+        ID_DatosEscolaridad,
+        ID_Ocupacion, 
+        ID_GradoEstudioObtenido
         
       )
       OUTPUT INSERTED.ID_DatosAlumno
       VALUES (
-        @ID_Usuario, @FechaNacimiento, @LugarNacimiento, @ID_Localidad, @ID_Calle, @Numero, 
-        @ID_Nacionalidad, @Telefono, @Email, 
-        @ID_DatosMadre, @ID_DatosPadre, @ID_DatosTutor, @ID_DatosEscolarridad
+        @ID_Usuario, @FechaNacimiento, @LugarNacimiento, 
+        @ID_Localidad, @ID_Calle, @Numero, 
+        @ID_Nacionalidad, 
+        @Telefono, @Email, 
+        @ID_DatosMadre, 
+        @ID_DatosPadre, 
+        @ID_DatosTutor, 
+        @ID_DatosEscolaridad,
+        @ID_Ocupacion,
+        @ID_GradoEstudioObtenido
       )
     `);
 
@@ -60,6 +75,7 @@ async function actualizarDatosAlumno(id, datos) {
 
   // A modo de ejemplo solo actualiza algunos campos:
   await request
+    .input('id', sql.Int, id)
     .input('FechaNacimiento', sql.Date, datos.FechaNacimiento)
     .input('LugarNacimiento', sql.VarChar, datos.LugarNacimiento)
     .input('ID_Localidad', sql.Int, datos.ID_Localidad)
@@ -71,7 +87,9 @@ async function actualizarDatosAlumno(id, datos) {
     .input('ID_DatosMadre', sql.Int, datos.ID_DatosMadre)
     .input('ID_DatosPadre', sql.Int, datos.ID_DatosPadre)
     .input('ID_DatosTutor', sql.Int, datos.ID_DatosTutor)
-    .input('ID_DatosEscolarridad', sql.Int, datos.ID_DatosEscolarridad)
+    .input('ID_DatosEscolaridad', sql.Int, datos.ID_DatosEscolaridad)
+    .input('ID_Ocupacion', sql.Int, datos.ID_Ocupacion)
+    .input('ID_GradoEstudioObtenido', sql.Int, datos.ID_GradoEstudioObtenido)
     .query(`
       UPDATE DATOS_ALUMNOS
       SET 
@@ -86,7 +104,9 @@ async function actualizarDatosAlumno(id, datos) {
           ID_DatosMadre = @ID_DatosMadre,
           ID_DatosPadre = @ID_DatosPadre, 
           ID_DatosTutor = @ID_DatosTutor, 
-          ID_DatosEscolarridad = @ID_DatosEscolarridad
+          ID_DatosEscolaridad = @ID_DatosEscolaridad,
+          ID_Ocupacion = @ID_Ocupacion,
+          ID_GradoEstudioObtenido = @ID_GradoEstudioObtenido
         
       WHERE ID_DatosAlumno = @id
     `);

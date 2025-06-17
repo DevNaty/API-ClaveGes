@@ -37,6 +37,18 @@ const obtenerInscripcionPorId = async (req, res) => {
   }
 };
 
+const actualizarInscripcion = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const datos = req.body;
+    await datosInscripcionesService.actualizarInscripcion(id, datos);
+    res.status(200).json({ mensaje: 'Datos del alumno actualizados' });
+  } catch (error) {
+    console.error('Error al actualizar datos del alumno:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 const eliminarInscripcion = async (req, res) => {
   try {
     const id = req.params.id;
@@ -55,5 +67,6 @@ module.exports = {
   crearInscripcion,
   obtenerInscripciones,
   obtenerInscripcionPorId,
+  actualizarInscripcion,
   eliminarInscripcion
 };

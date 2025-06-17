@@ -11,14 +11,14 @@ async function crearDatosTutor(datos) {
     .input('Nombre', sql.VarChar, datos.Nombre)
     .input('Apellido', sql.VarChar, datos.Apellido)
     .input('Dni', sql.VarChar, datos.Dni)
-    .input('ID_Ocupacion', sql.Int, datos.ID_Ocupacion)
     .input('Telefono', sql.VarChar, datos.Telefono)
     .input('Email', sql.VarChar, datos.Email)
+    .input('ID_Ocupacion', sql.Int, datos.ID_Ocupacion)
     
     .query(`
       INSERT INTO DATOS_TUTOR (
-        ID_Usuario, Nombre, Apellido, Dni, Nombre, Apellido, Dni,
-        ID_Ocupacion, Telefono,Email 
+        ID_Usuario, Nombre, Apellido, Dni, 
+        Telefono, Email,ID_Ocupacion 
       )
       OUTPUT INSERTED.ID_DatosTutor
       VALUES (
@@ -27,12 +27,14 @@ async function crearDatosTutor(datos) {
         @Apellido,
         @Dni, 
         @Telefono,
-        @Email
+        @Email,
+        @ID_Ocupacion
       )
     `);
 
   return { id: result.recordset[0].ID_DatosTutor };
 }
+
 async function obtenerDatosTutor() {
   const pool = await poolPromise;
   const result = await pool.request()
@@ -56,7 +58,7 @@ async function actualizarDatosTutor(id, datos) {
   // A modo de ejemplo solo actualiza algunos campos:
   await request
     
-    
+    .input('id', sql.Int, id)
     .input('Nombre', sql.VarChar, datos.Nombre)
     .input('Apellido', sql.VarChar, datos.Apellido)
     .input('Dni', sql.VarChar, datos.Dni)
@@ -72,8 +74,8 @@ async function actualizarDatosTutor(id, datos) {
           Apellido  = @Apellido,
           Dni = @Dni,
           Telefono = @Telefono,
-          Email Cominicacion = @Email Cominicacion,
-          ID_Ocupacion = @ID_Ocupacion,
+          Email = @Email,
+          ID_Ocupacion = @ID_Ocupacion
         
       WHERE ID_DatosTutor = @id
     `);

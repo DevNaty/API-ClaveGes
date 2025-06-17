@@ -34,7 +34,7 @@ const crearInscripcion = async (datos) => {
       (ID_Usuario, ID_DetalleMatricula, ID_DetalleInstrumento,
       TieneInstrumentos, Observaciones, ID_Ciclo, ID_Formacion, 
       ID_Nivel, ID_EspacioCurricular, AñoLectivo, FechaInscripcion)
-      OUTPUT INSERTED.ID_Inscripcion
+      OUTPUT INSERTED.ID_DatoInscripcion
       VALUES (@ID_Usuario, @ID_DetalleMatricula, @ID_DetalleInstrumento,
       @TieneInstrumentos, @Observaciones, @ID_Ciclo, @ID_Formacion, @ID_Nivel, @ID_EspacioCurricular, @AñoLectivo, @FechaInscripcion)
     `);
@@ -60,6 +60,45 @@ const obtenerInscripcionPorId = async (id) => {
   return result.recordset[0];
 };
 
+async function actualizarInscripcion(id, datos) {
+  const pool = await poolPromise;
+  const request = pool.request();
+
+  // A modo de ejemplo solo actualiza algunos campos:
+  await request
+    .input('id', sql.Int, id)
+    
+    .input('ID_DetalleMatricula', sql.Int, datos.ID_DetalleMatricula)
+    .input('ID_DetalleInstrumento', sql.Int, datos.ID_DetalleInstrumento)
+    .input('TieneInstrumentos', sql.Bit, datos.TieneInstrumentos)
+    .input('Observaciones', sql.VarChar, datos.Observaciones)
+    .input('ID_Ciclo', sql.Int, datos.ID_Ciclo)
+    .input('ID_Formacion', sql.Int, datos.ID_Formacion)
+    .input('ID_Nivel', sql.Int, datos.ID_Nivel)
+    .input('ID_EspacioCurricular', sql.Int, datos.ID_EspacioCurricular)
+    .input('AñoLectivo', sql.Date, datos.AñoLectivo)
+    .input('FechaInscripcion', sql.DateTime, datos.FechaInscripcion)
+    
+    .query(`
+      UPDATE DATOS_INSCRIPCION
+      SET 
+          
+          ID_DetalleMatricula = @ID_DetalleMatricula,
+          ID_DetalleInstrumento = @ID_DetalleInstrumento, 
+          TieneInstrumentos = @TieneInstrumentos, 
+          Observaciones = @Observaciones,
+          ID_Ciclo = @ID_Ciclo,
+          ID_Formacion = @ID_Formacion,
+          ID_Nivel = @ID_Nivel, 
+          ID_EspacioCurricular = @ID_EspacioCurricular,
+          AñoLectivo = @AñoLectivo, 
+          FechaInscripcion = @FechaInscripcion
+        
+      WHERE ID_DatoInscripcion = @id
+    `);
+}
+
+
 const eliminarInscripcion = async (id) => {
   const pool = await poolPromise;
   const result = await pool.request()
@@ -72,5 +111,6 @@ module.exports = {
   crearInscripcion,
   obtenerInscripciones,
   obtenerInscripcionPorId,
+  actualizarInscripcion,
   eliminarInscripcion
 };

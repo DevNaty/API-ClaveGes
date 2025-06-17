@@ -5,6 +5,7 @@ const datosInscripcionesController = require('../controllers/datosInscripcionesC
 // Rutas
 router.post('/', datosInscripcionesController.crearInscripcion);
 router.get('/:id', datosInscripcionesController.obtenerInscripcionPorId);
+router.put('/:id', datosInscripcionesController.actualizarInscripcion);
 router.get('/', datosInscripcionesController.obtenerInscripciones);
 router.delete('/:id', datosInscripcionesController.eliminarInscripcion);
 

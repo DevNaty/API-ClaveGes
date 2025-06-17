@@ -17,8 +17,8 @@ async function crearDatosPadre(datos) {
     
     .query(`
       INSERT INTO DATOS_PADRE (
-        ID_Usuario, Nombre, Apellido, Dni, Nombre, Apellido, Dni,
-        ID_Ocupacion, Telefono,Email 
+        ID_Usuario, Nombre, Apellido, Dni, 
+        ID_Ocupacion, Telefono, Email 
       )
       OUTPUT INSERTED.ID_DatosPadre 
       VALUES (
@@ -26,6 +26,7 @@ async function crearDatosPadre(datos) {
         @Nombre,
         @Apellido,
         @Dni, 
+        @ID_Ocupacion,
         @Telefono,
         @Email
       )
@@ -58,7 +59,7 @@ async function actualizarDatosPadre(id, datos) {
   // A modo de ejemplo solo actualiza algunos campos:
   await request
     
-    
+    .input('id', sql.Int, id)
     .input('Nombre', sql.VarChar, datos.Nombre)
     .input('Apellido', sql.VarChar, datos.Apellido)
     .input('Dni', sql.VarChar, datos.Dni)
@@ -74,8 +75,8 @@ async function actualizarDatosPadre(id, datos) {
           Apellido  = @Apellido,
           Dni = @Dni,
           Telefono = @Telefono,
-          Email Cominicacion = @Email Cominicacion,
-          ID_Ocupacion = @ID_Ocupacion,
+          Email  = @Email,
+          ID_Ocupacion = @ID_Ocupacion
         
       WHERE ID_DatosPadre = @id
     `);

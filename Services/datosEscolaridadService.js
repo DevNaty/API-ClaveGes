@@ -9,18 +9,26 @@ async function crearDatosEscolaridad(datos) {
   const result = await request
     .input('ID_Usuario', sql.Int, datos.ID_Usuario)
     .input('ID_Escuela', sql.Int, datos.ID_Escuela)
-    .input('ID_NivelEscolar', sql.Int, datos.ID_NivelEscolar)
     .input('ID_Grado', sql.Int, datos.ID_Grado)
     .input('ID_Turno', sql.Int, datos.ID_Turno)
+    .input('ID_NivelEscolar', sql.Int, datos.ID_NivelEscolar)
     
+      
     .query(`
       INSERT INTO DATOS_ESCOLARIDAD (
-        ID_Usuario, ID_Escuela, ID_NivelEscolar, 
-        ID_Grado, ID_Turno
+        ID_Usuario, 
+        ID_Escuela,
+        ID_Grado, 
+        ID_Turno,  
+        ID_NivelEscolar
+    )
       OUTPUT INSERTED.ID_DatosEscolaridad
       VALUES (
-        @ID_Usuario, @ID_Escuela, @ID_NivelEscolar, 
-        @ID_Grado, @ID_Turno
+        @ID_Usuario, 
+        @ID_Escuela, 
+        @ID_Grado, 
+        @ID_Turno,
+        @ID_NivelEscolar
       )
     `);
 
@@ -49,7 +57,7 @@ async function actualizarDatosEscolaridad(id, datos) {
 
   // A modo de ejemplo solo actualiza algunos campos:
   await request
-    
+    .input('id', sql.Int, id)
     .input('ID_Escuela', sql.Int, datos.ID_Escuela)
     .input('ID_NivelEscolar', sql.Int, datos.ID_NivelEscolar)
     .input('ID_Grado', sql.Int, datos.ID_Grado)

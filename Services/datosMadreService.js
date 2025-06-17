@@ -62,7 +62,7 @@ async function actualizarDatosMadre(id, datos) {
   // A modo de ejemplo solo actualiza algunos campos:
   await request
     
-    
+    .input('id', sql.Int, id)
     .input('Nombre', sql.VarChar, datos.Nombre)
     .input('Apellido', sql.VarChar, datos.Apellido)
     .input('Dni', sql.VarChar, datos.Dni)
