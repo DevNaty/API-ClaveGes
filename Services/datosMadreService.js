@@ -42,7 +42,23 @@ async function crearDatosMadre(datos) {
 async function obtenerDatosMadre() {
   const pool = await poolPromise;
   const result = await pool.request()
-    .query('SELECT * FROM DATOS_MADRE');
+    .query(`
+      SELECT 
+      u.ID_Usuario,
+      u.Nombre AS NombreUsuario,
+      u.Apellido AS ApellidoUsuario,
+      dm.id_datosmadre,
+      dm.nombre AS NombreMadre,
+      dm.apellido AS ApellidoMadre,
+      dm.dni AS DniMadre, 
+      dm.telefono AS TelefonoMadre,
+      dm.email AS EmailMadre,
+      o.descripcion AS Ocupacion
+
+      FROM DATOS_MADRE dm
+      LEFT JOIN USUARIOS u ON dm.ID_Usuario = u.ID_Usuario
+      LEFT JOIN OCUPACIONES o ON dm.ID_Ocupacion = o.ID_Ocupacion
+      `);
   return result.recordset;
 }
 
@@ -50,7 +66,23 @@ async function obtenerDatosMadrePorId(id) {
   const pool = await poolPromise;
   const result = await pool.request()
     .input('id', sql.Int, id)
-    .query('SELECT * FROM DATOS_MADRE WHERE ID_DatosMadre = @id');
+    .query(`SELECT 
+      u.ID_Usuario,
+      u.Nombre AS NombreUsuario,
+      u.Apellido AS ApellidoUsuario,
+      dm.id_datosmadre,
+      dm.nombre AS NombreMadre,
+      dm.apellido AS ApellidoMadre,
+      dm.dni AS DniMadre, 
+      dm.telefono AS TelefonoMadre,
+      dm.email AS EmailMadre,
+      o.descripcion AS Ocupacion
+
+      FROM DATOS_MADRE dm
+      LEFT JOIN USUARIOS u ON dm.ID_Usuario = u.ID_Usuario
+      LEFT JOIN OCUPACIONES o ON dm.ID_Ocupacion = o.ID_Ocupacion
+
+      WHERE ID_DatosMadre = @id` );
 
   return result.recordset[0];
 }

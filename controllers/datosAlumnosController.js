@@ -1,4 +1,5 @@
-const datosAlumnosService = require('../services/datosAlumnosService');
+const datosAlumnosService = require('../Services/datosAlumnosService');
+console.log('Datos Alumnos Service:');
 
 const crearDatosAlumno = async (req, res) => {
   try {
@@ -14,9 +15,10 @@ const obtenerDatosAlumno = async (req, res) => {
   try {
     const datos = await datosAlumnosService.obtenerDatosAlumno();
     res.json(datos);
+    console.log('Datos de alumnos obtenidos correctamente');
   } catch (error) {
-    console.error('❌ Error al obtener usuarios:', error);
-    res.status(500).json({ error: 'Error al obtener usuarios' });
+    console.error('❌ Error al obtener datos del alumno:', error);
+    res.status(500).json({ error: 'Error al obtener datos del alumno' });
   }
 };
 

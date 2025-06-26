@@ -56,7 +56,69 @@ async function crearDatosAlumno(datos) {
 async function obtenerDatosAlumno() {
   const pool = await poolPromise;
   const result = await pool.request()
-    .query('SELECT * FROM DATOS_ALUMNOS');
+
+    .query(`
+      SELECT
+  da.ID_DatosAlumno,
+  u.Nombre + ' ' + u.Apellido AS Usuario,
+  da.FechaNacimiento,
+  da.LugarNacimiento,
+  l.Descripcion AS Localidad,
+  c.Descripcion AS Calle,
+  da.Numero,
+  n.Descripcion AS Nacionalidad,
+  da.Telefono,
+  da.Email,
+  -- Datos de la Madre
+  dm.ID_DatosMadre,
+  dm.Nombre AS Madre,
+  dm.Apellido AS ApellidoMadre,
+  dm.Telefono AS TelefonoMadre,
+  dm.Email AS EmailMadre,
+  om.Descripcion AS OcupacionMadre, -- Ocupación de la Madre
+  -- Datos del Padre
+  dp.ID_DatosPadre,
+  dp.Nombre AS Padre,
+  dp.Apellido AS ApellidoPadre,
+  dp.Telefono AS TelefonoPadre,
+  dp.Email AS EmailPadre,
+  op.Descripcion AS OcupacionPadre, -- Ocupación del Padre
+  -- Datos del Tutor
+  dt.ID_DatosTutor,
+  dt.Nombre AS Tutor,
+  dt.Apellido AS ApellidoTutor,
+  dt.Telefono AS TelefonoTutor,
+  dt.Email AS EmailTutor,
+  ot.Descripcion AS OcupacionTutor, -- Ocupación del Tutor
+  -- Datos del Alumno (si el alumno también tiene ocupación)
+  oa.Descripcion AS OcupacionAlumno, -- Ocupación del Alumno
+  ge.Descripcion AS GradoEstudioObtenido
+FROM
+  DATOS_ALUMNOS da
+LEFT JOIN
+  USUARIOS u ON da.ID_Usuario = u.ID_Usuario
+LEFT JOIN
+  LOCALIDADES l ON da.ID_Localidad = l.ID_Localidad -- Asumo que hay una tabla LOCALIDADES
+LEFT JOIN
+  CALLES c ON da.ID_Calle = c.ID_Calle -- Asumo que hay una tabla CALLES
+LEFT JOIN
+  NACIONALIDADES n ON da.ID_Nacionalidad = n.ID_Nacionalidad -- Asumo que hay una tabla NACIONALIDADES
+LEFT JOIN
+  GRADO_DE_ESTUDIOS ge ON da.ID_GradoEstudioObtenido = ge.ID_GradoEstudioObtenido -- Asumo una tabla GRADO_DE_ESTUDIOS
+LEFT JOIN
+  DATOS_MADRE dm ON da.ID_DatosMadre = dm.ID_DatosMadre
+LEFT JOIN
+  DATOS_PADRE dp ON da.ID_DatosPadre = dp.ID_DatosPadre
+LEFT JOIN
+  DATOS_TUTOR dt ON da.ID_DatosTutor = dt.ID_DatosTutor
+LEFT JOIN
+  OCUPACIONES om ON dm.ID_Ocupacion = om.ID_Ocupacion -- Ocupación para la Madre
+LEFT JOIN
+  OCUPACIONES op ON dp.ID_Ocupacion = op.ID_Ocupacion -- Ocupación para el Padre
+LEFT JOIN
+  OCUPACIONES ot ON dt.ID_Ocupacion = ot.ID_Ocupacion -- Ocupación para el Tutor
+LEFT JOIN
+  OCUPACIONES oa ON da.ID_Ocupacion = oa.ID_Ocupacion; -- Ocupación para el Alumno (si aplica)`);
   return result.recordset;
 }
 
@@ -64,7 +126,57 @@ async function obtenerDatosAlumnoPorId(id) {
   const pool = await poolPromise;
   const result = await pool.request()
     .input('id', sql.Int, id)
-    .query('SELECT * FROM DATOS_ALUMNOS WHERE ID_DatosAlumno = @id');
+    .query(
+      `SELECT
+  da.ID_DatosAlumno,
+  u.Nombre + ' ' + u.Apellido AS Usuario,
+  da.FechaNacimiento,
+  da.LugarNacimiento,
+  l.Descripcion AS Localidad,
+  c.Descripcion AS Calle,
+  da.Numero,
+  n.Descripcion AS Nacionalidad,
+  da.Telefono,
+  da.Email,
+  -- Datos de la Madre
+  
+  dm.Nombre AS Madre,
+  dm.Apellido AS ApellidoMadre,
+  dm.Telefono AS TelefonoMadre,
+  dm.Email AS EmailMadre,
+  om.Descripcion AS OcupacionMadre, -- Ocupación de la Madre
+  -- Datos del Padre
+  
+  dp.Nombre AS Padre,
+  dp.Apellido AS ApellidoPadre,
+  dp.Telefono AS TelefonoPadre,
+  dp.Email AS EmailPadre,
+  op.Descripcion AS OcupacionPadre, -- Ocupación del Padre
+  -- Datos del Tutor
+
+  dt.Nombre AS Tutor,
+  dt.Apellido AS ApellidoTutor,
+  dt.Telefono AS TelefonoTutor,
+  dt.Email AS EmailTutor,
+  ot.Descripcion AS OcupacionTutor, -- Ocupación del Tutor
+  -- Datos del Alumno (si el alumno también tiene ocupación)
+  oa.Descripcion AS OcupacionAlumno, -- Ocupación del Alumno
+  ge.Descripcion AS GradoEstudioObtenido
+FROM
+  DATOS_ALUMNOS da
+LEFT JOIN USUARIOS u ON da.ID_Usuario = u.ID_Usuario
+LEFT JOIN LOCALIDADES l ON da.ID_Localidad = l.ID_Localidad -- Asumo que hay una tabla LOCALIDADES
+LEFT JOIN CALLES c ON da.ID_Calle = c.ID_Calle -- Asumo que hay una tabla CALLES
+LEFT JOIN NACIONALIDADES n ON da.ID_Nacionalidad = n.ID_Nacionalidad -- Asumo que hay una tabla NACIONALIDADES
+LEFT JOIN GRADO_DE_ESTUDIOS ge ON da.ID_GradoEstudioObtenido = ge.ID_GradoEstudioObtenido -- Asumo una tabla GRADO_DE_ESTUDIOS
+LEFT JOIN DATOS_MADRE dm ON da.ID_DatosMadre = dm.ID_DatosMadre
+LEFT JOIN DATOS_PADRE dp ON da.ID_DatosPadre = dp.ID_DatosPadre
+LEFT JOIN DATOS_TUTOR dt ON da.ID_DatosTutor = dt.ID_DatosTutor
+LEFT JOIN OCUPACIONES om ON dm.ID_Ocupacion = om.ID_Ocupacion
+LEFT JOIN OCUPACIONES op ON dp.ID_Ocupacion = op.ID_Ocupacion 
+LEFT JOIN OCUPACIONES ot ON dt.ID_Ocupacion = ot.ID_Ocupacion
+LEFT JOIN OCUPACIONES oa ON da.ID_Ocupacion = oa.ID_Ocupacion 
+ WHERE ID_DatosAlumno = @id`);
 
   return result.recordset[0];
 }

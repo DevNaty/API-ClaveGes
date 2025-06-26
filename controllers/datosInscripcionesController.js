@@ -42,9 +42,9 @@ const actualizarInscripcion = async (req, res) => {
     const id = parseInt(req.params.id);
     const datos = req.body;
     await datosInscripcionesService.actualizarInscripcion(id, datos);
-    res.status(200).json({ mensaje: 'Datos del alumno actualizados' });
+    res.status(200).json({ mensaje: 'Datos de la inscripcion actualizados' });
   } catch (error) {
-    console.error('Error al actualizar datos del alumno:', error);
+    console.error('Error al actualizar datos de la inscripcion:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };

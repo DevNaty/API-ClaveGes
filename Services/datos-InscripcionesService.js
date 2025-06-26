@@ -4,8 +4,6 @@ const sql = require('mssql');
 const crearInscripcion = async (datos) => {
   const {
     ID_Usuario,
-    ID_DetalleMatricula,
-    ID_DetalleInstrumento,
     TieneInstrumentos,
     Observaciones,    
     ID_Ciclo,
@@ -19,35 +17,51 @@ const crearInscripcion = async (datos) => {
   const pool = await poolPromise;
   const result = await pool.request()
     .input('ID_Usuario', sql.Int, ID_Usuario)
-    .input('ID_DetalleMatricula', sql.Int, ID_DetalleMatricula)
-    .input('ID_DetalleInstrumento', sql.Int, ID_DetalleInstrumento || null)
     .input('TieneInstrumentos', sql.Bit, TieneInstrumentos)
     .input('Observaciones', sql.VarChar, Observaciones)
     .input('ID_Ciclo', sql.Int, ID_Ciclo)
     .input('ID_Formacion', sql.Int, ID_Formacion)
     .input('ID_Nivel', sql.Int, ID_Nivel)
     .input('ID_EspacioCurricular', sql.Int, ID_EspacioCurricular)
-    .input('AñoLectivo', sql.Date, AñoLectivo)
+    .input('AñoLectivo', sql.Int, AñoLectivo)
     .input('FechaInscripcion', sql.DateTime, FechaInscripcion)
     .query(`
       INSERT INTO DATOS_INSCRIPCION 
-      (ID_Usuario, ID_DetalleMatricula, ID_DetalleInstrumento,
+      (ID_Usuario, 
       TieneInstrumentos, Observaciones, ID_Ciclo, ID_Formacion, 
       ID_Nivel, ID_EspacioCurricular, AñoLectivo, FechaInscripcion)
       OUTPUT INSERTED.ID_DatoInscripcion
-      VALUES (@ID_Usuario, @ID_DetalleMatricula, @ID_DetalleInstrumento,
+      VALUES (@ID_Usuario, 
       @TieneInstrumentos, @Observaciones, @ID_Ciclo, @ID_Formacion, @ID_Nivel, @ID_EspacioCurricular, @AñoLectivo, @FechaInscripcion)
     `);
 
   return result.recordset[0];
 };
-
-const obtenerInscripciones = async () => {
+const obtenerInscripciones = async (id) => {
   const pool = await poolPromise;
-  const result = await pool.request().query(`
-    SELECT *    FROM DATOS_INSCRIPCION 
-  `);
-  return result.recordset;
+  const result = await pool.request()
+    .input('ID_DatoInscripcion', sql.Int, id)
+    .query(`
+      SELECT 
+      u.Nombre + ' ' + u.Apellido AS Usuario,
+      TieneInstrumentos, 
+      Observaciones, 
+      c.Descripcion AS DescripcionCiclo, 
+      f.Descripcion AS DescripcionFormacion,
+      n. Descripcion AS DescripcionNivel, 
+      ec. Descripcion AS DescripcionEspacioCurricular, 
+      AñoLectivo, 
+      FechaInscripcion
+
+      FROM DATOS_INSCRIPCION di
+      LEFT JOIN USUARIOS u ON di.ID_Usuario = u.ID_Usuario
+      LEFT JOIN CICLOS c ON di.ID_Ciclo = c.ID_Ciclo
+      LEFT JOIN FORMACIONES f ON di.ID_Formacion = f.ID_Formacion 
+      LEFT JOIN NIVELES n ON di.ID_Nivel = n.ID_Nivel
+      LEFT JOIN ESPACIOSCURRICULARES ec ON di.ID_EspacioCurricular = ec.ID_EspacioCurricular
+      
+    `);
+  return result.recordset[0];
 };
 
 const obtenerInscripcionPorId = async (id) => {
@@ -68,8 +82,6 @@ async function actualizarInscripcion(id, datos) {
   await request
     .input('id', sql.Int, id)
     
-    .input('ID_DetalleMatricula', sql.Int, datos.ID_DetalleMatricula)
-    .input('ID_DetalleInstrumento', sql.Int, datos.ID_DetalleInstrumento)
     .input('TieneInstrumentos', sql.Bit, datos.TieneInstrumentos)
     .input('Observaciones', sql.VarChar, datos.Observaciones)
     .input('ID_Ciclo', sql.Int, datos.ID_Ciclo)
@@ -83,8 +95,6 @@ async function actualizarInscripcion(id, datos) {
       UPDATE DATOS_INSCRIPCION
       SET 
           
-          ID_DetalleMatricula = @ID_DetalleMatricula,
-          ID_DetalleInstrumento = @ID_DetalleInstrumento, 
           TieneInstrumentos = @TieneInstrumentos, 
           Observaciones = @Observaciones,
           ID_Ciclo = @ID_Ciclo,
@@ -107,54 +117,7 @@ const eliminarInscripcion = async (id) => {
   return result.rowsAffected[0] > 0;
 };
 
-const { poolPromise } = require('../db');
-const sql = require('mssql');
 
-/**
- * @desc Obtiene todas las inscripciones, mostrando las descripciones
- * de las entidades relacionadas en lugar de solo sus IDs.
- * @returns {Array} Un array de objetos de inscripción con descripciones legibles.
- */
-const obtenerInscripcionesConDescripciones = async () => {
-  try {
-    const pool = await poolPromise;
-    const result = await pool.request().query(`
-      SELECT
-        DI.ID_DatoInscripcion,
-        U.Nombre + ' ' + U.Apellido AS NombreUsuario, -- Nombre completo del usuario
-        DMat.Descripcion AS DescripcionMatricula,      -- Descripción de detalle de matrícula
-        DInst.Descripcion AS DescripcionInstrumento,   -- Descripción de detalle de instrumento
-        DI.TieneInstrumentos,
-        DI.Observaciones,
-        C.Descripcion AS DescripcionCiclo,             -- Descripción del ciclo
-        F.Descripcion AS DescripcionFormacion,         -- Descripción de la formación
-        N.Descripcion AS DescripcionNivel,             -- Descripción del nivel
-        EC.Descripcion AS DescripcionEspacioCurricular, -- Descripción del espacio curricular
-        DI.AñoLectivo,
-        FORMAT(DI.FechaInscripcion, 'yyyy-MM-dd') AS FechaInscripcion -- Formato de fecha
-      FROM
-        DATOS_INSCRIPCION DI
-      LEFT JOIN
-        USUARIOS U ON DI.ID_Usuario = U.ID_Usuario
-      LEFT JOIN
-        DETALLE_MATRICULA DMat ON DI.ID_DetalleMatricula = DMat.ID_DetalleMatricula -- Asume el nombre de tu tabla de detalle de matrícula
-      LEFT JOIN
-        DETALLE_INSTRUMENTO DInst ON DI.ID_DetalleInstrumento = DInst.ID_DetalleInstrumento -- Asume el nombre de tu tabla de detalle de instrumento
-      LEFT JOIN
-        CICLOS C ON DI.ID_Ciclo = C.ID_Ciclo
-      LEFT JOIN
-        FORMACIONES F ON DI.ID_Formacion = F.ID_Formacion
-      LEFT JOIN
-        NIVELES N ON DI.ID_Nivel = N.ID_Nivel
-      LEFT JOIN
-        ESPACIOSCURRICULARES EC ON DI.ID_EspacioCurricular = EC.ID_EspacioCurricular;
-    `);
-    return result.recordset;
-  } catch (error) {
-    console.error('❌ Error al obtener inscripciones con descripciones:', error);
-    throw new Error('No se pudieron obtener las inscripciones con descripciones.');
-  }
-};
 
 
 module.exports = {
@@ -162,6 +125,5 @@ module.exports = {
   obtenerInscripciones,
   obtenerInscripcionPorId,
   actualizarInscripcion,
-  eliminarInscripcion,
-  obtenerInscripcionesConDescripciones
+  eliminarInscripcion
 };
